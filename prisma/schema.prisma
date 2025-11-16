@@ -1,0 +1,118 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// File: prisma/schema.prisma
+
+// 1. Konfigurasi Generator Klien Prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+// 2. Konfigurasi Sumber Data (Database)
+// Saya menggunakan PostgreSQL berdasarkan Class Diagram memakai Int ID.
+// Ganti dengan "mysql" atau "mongodb" jika lebih suka.
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL") // Ambil URL database dari file .env
+}
+
+// 3. Model Data Aplikasi
+
+// Model untuk autentikasi (Use Case: Login)
+model Admin {
+  id       Int    @id @default(autoincrement())
+  name     String
+  email    String @unique // Digunakan untuk login, harus unik
+  password String // HARUS disimpan dalam bentuk hash (e.g., bcrypt)
+}
+
+// --- Model Halaman Statis (Umumnya "Singleton") ---
+// Ini adalah model yang datanya hanya ada 1 baris, dan Admin hanya meng-update-nya.
+
+// (Use Case: Kelola Profil Sekolah)
+model ProfilSekolah {
+  id          Int    @id @default(autoincrement())
+  namaSekolah String
+  sejarah     String @db.Text // @db.Text untuk tipe data TEXT yang panjang
+}
+
+// (Use Case: Kelola Visi & Misi)
+model VisiMisi {
+  id   Int    @id @default(autoincrement())
+  visi String @db.Text
+  misi String @db.Text
+}
+
+// (Use Case: Kelola Kontak)
+model KontakSekolah {
+  id          Int     @id @default(autoincrement())
+  telepon     String? // Tanda '?' berarti opsional
+  email       String?
+  alamat      String
+  instagram   String?
+  facebook    String?
+  website     String?
+  petaLokasi  String? // URL embed Google Maps (dari naratif "peta lokasi")
+}
+
+// (Use Case: Kelola Info Pendaftaran)
+model InfoPendaftaran {
+  id                Int      @id @default(autoincrement())
+  jadwalMulai       DateTime @db.Date // @db.Date menyimpan tanggal saja
+  jadwalSelesai     DateTime @db.Date
+  persyaratan       String   @db.Text
+  prosedur          String   @db.Text
+  kontakPendaftaran String
+}
+
+// (Use Case: Kelola Jumlah Siswa & Guru)
+model StatistikSekolah {
+  id          Int @id @default(autoincrement())
+  jumlahSiswa Int
+  jumlahGuru  Int
+}
+
+// --- Model Halaman Dinamis (Bisa Banyak Data/List) ---
+// Ini adalah model di mana Admin bisa menambah, mengedit, dan menghapus banyak data.
+
+// (Use Case: Kelola Berita atau Kegiatan)
+model BeritaKegiatan {
+  id        Int      @id @default(autoincrement())
+  judul     String   @unique // Sesuai naratif "Judul berita harus unik"
+  slug      String   @unique // Untuk URL (misal: /berita/kegiatan-17-agustus)
+  isi       String   @db.Text
+  tanggal   DateTime @default(now())
+  gambar    String   // Menyimpan URL ke gambar
+  kategori  String   // "Berita" atau "Kegiatan"
+}
+
+// (Use Case: Kelola Ekstrakurikuler)
+model Ekstrakurikuler {
+  id        Int    @id @default(autoincrement())
+  nama      String @unique // Sesuai naratif "nama unik"
+  pembina   String // Wajib diisi (sesuai naratif "data pembina kosong -> ditolak")
+  jadwal    String
+  deskripsi String @db.Text
+}
+
+// (Use Case: Kelola Fasilitas atau Sarpras)
+model SaranaPrasarana {
+  id        Int    @id @default(autoincrement())
+  nama      String
+  tipe      String // "Sarana" atau "Prasarana"
+  deskripsi String @db.Text
+  gambar    String // URL ke gambar
+}
+
+// (Use Case: Kelola Prestasi)
+model Prestasi {
+  id            Int    @id @default(autoincrement())
+  namaPrestasi  String
+  kategori      String // "Akademik", "Non-Akademik"
+  tahun         Int    // Wajib (sesuai naratif "harus memiliki tahun")
+  penyelenggara String
+  deskripsi     String @db.Text
+}

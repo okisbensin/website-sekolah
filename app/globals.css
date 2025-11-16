@@ -1,10 +1,15 @@
+/* File: globals.css */
+
+/* 1. Impor Tailwind (seperti yang Anda miliki) */
 @import "tailwindcss";
 
+/* 2. Definisikan variabel :root untuk tema terang (default) */
 :root {
   --background: #ffffff;
   --foreground: #171717;
 }
 
+/* 3. Terapkan variabel ke Tailwind */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -12,15 +17,76 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* 4. "Paksa" Tema Terang di dalam Kueri Dark Mode */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Ini adalah "trik"-nya. Kita paksa tetap terang. */
+    --background: #ffffff;
+    --foreground: #171717;
   }
 }
 
+/* 5. Atur Body Default (seperti file Anda) */
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* 6. Tambahkan Kelas Kustom untuk Tema Profesional Kita */
+/* Kita bisa panggil kelas ini di samping kelas Tailwind */
+
+/* Warna */
+.bg-brand-dark {
+  background-color: #1A202C;
+}
+.bg-brand-green {
+  background-color: #2E7D32;
+}
+.bg-brand-green:hover {
+  background-color: #256629;
+}
+.text-brand-green {
+  color: #2E7D32;
+}
+.text-brand-dark {
+  color: #1A202C;
+}
+
+/* Hero Section */
+.hero-section {
+  position: relative;
+  height: 600px;
+  color: white;
+}
+.hero-image {
+  /* Menggunakan 'object-fit' seperti di Tailwind */
+  object-fit: cover;
+  /* Memberi overlay gelap agar teks terbaca */
+  filter: brightness(50%);
+}
+.hero-content {
+  position: relative;
+  z-index: 10;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1rem;
+}
+
+/* Mengatur ulang style formulir agar terang */
+input, textarea, select {
+  color: #1A202C;
+  background: #ffffff;
+  border: 1px solid #ccc;
+  padding: 8px;
+  width: 100%;
+  border-radius: 6px;
+}
+input:focus, textarea:focus, select:focus {
+  outline: 2px solid #2E7D32;
+  border-color: transparent;
 }
