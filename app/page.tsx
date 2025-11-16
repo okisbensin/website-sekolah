@@ -16,7 +16,7 @@ export default function Home() {
       {/* --- Hero Section --- */}
       <section className="hero-section -mt-[88px]"> {/* Trik: Tarik ke atas di belakang header */}
         <Image
-          src="/placeholder-hero.jpg" // Ganti dengan gambar gedung sekolah
+          src="/gedung-sekolah.jpg" // Ganti dengan gambar gedung sekolah
           alt="Gedung SMA Pasundan Majalaya"
           layout="fill"
           quality={80}
